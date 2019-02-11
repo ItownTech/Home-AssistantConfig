@@ -32,7 +32,6 @@ speech_engine:
             {% if media_player | length == 0 %}
               {% set media_player = [
                 'media_player.livingroomcc',
-                'media_player.alarm_clock',
                 'media_player.bedroom_alarm_panel'
               ] %}
             {% endif %}
@@ -84,16 +83,19 @@ speech_engine:
               {%- endif -%}
             {%- endfor %}
             lights on right now.
-
             {% set comma = joiner(', ') %}
             The
             {% for group in states.group|groupby('state') -%}
-              {%- for entity in group.list if entity.state == 'on' and entity.name.split(' ')[1]|lower == 'lights' and entity.name.split(' ')[0]|lower != 'all' and entity.name.split(' ')[0]|lower != 'interior' -%}
-                {{ ' and' if loop.last and not loop.first else comma() }}
-                {{ entity.name }}
+              {%- for entity in group.list if entity.state == 'on'
+              and entity.name.split(' ')[1]|lower == 'lights'
+              and entity.name.split(' ')[0]|lower != 'all'
+              and entity.name.split(' ')[0]|lower != 'interior'
+              -%}
+                {{ 'and' if loop.last and not loop.first else comma() }}
+                {{ entity.name|replace('Lights','')}}
               {%- endfor -%}
             {%- endfor -%}
-            .
+            lights are on.
             {%- endif -%}
           {%- endmacro -%}
 
@@ -137,7 +139,6 @@ speech_engine:
           {%- macro iss() -%}
             {% if is_state('binary_sensor.iss', 'on') -%}
               Here is something interesting. The international space station is above us now. There are {{ states.binary_sensor.iss.attributes['number_of_people_in_space'] }} people in space right now.
-              {{ outside_weather() }}
             {% endif -%}
           {%- endmacro -%}
 
@@ -226,7 +227,7 @@ speech_engine:
           {% endif %}
 
           {# call a Random fact about the house #}
-          {{ ([iss, moon, uv, holiday]|random)() }}
+          {{ ([iss, moon, uv, holiday, outside_weather]|random)() }}
 
     - service: input_boolean.turn_off
       data:

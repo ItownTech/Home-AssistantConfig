@@ -203,7 +203,7 @@ rules:
       - binary_sensor.mcu3_gpio5
       - binary_sensor.mcu3_gpio10
       - binary_sensor.mcu3_gpio14
-      - binary_sensor.kitchen_door_opened
+      - binary_sensor.kitchen_door
       - binary_sensor.mcu3_light
     states:
       - state: 'off'
@@ -284,5 +284,8 @@ rules:
   - name: Camera Images
     entities:
       - camera.stone_door
+      - camera.camera1
+      - camera.camera2
+      - camera.camera3
     image_template: '${entity.attributes.entity_picture}'
     # image_refresh_interval: 20 # in seconds - Future options if needed.

@@ -32,6 +32,10 @@ skybell:
 
 camera:
   - platform: skybell
+    monitored_conditions:
+    - avatar
+    - activity
+    activity_name: "Last Activity"
 
 binary_sensor:
   - platform: skybell
@@ -50,7 +54,7 @@ sensor:
 switch:
   - platform: skybell
     monitored_conditions:
-      - do_not_disturb
+#      - do_not_disturb
       - motion_sensor
 
 ###################################
@@ -79,7 +83,7 @@ automation:
 
     action:
       - service: script.skybell_pressed
-      - service: script.tweet_engine
+      - service: script.tweet_engine_image
         data_template:
           tweet: >
             {{ [
@@ -87,12 +91,22 @@ automation:
             "Ouch! That hurt. Who touched the SkyBell Doorbell?",
             "Someone just poked me in the @MySkybell!",
             "I see you! You are at the @MySkyBell and you just pressed it.",
-            "Someone answer my door.  Someone just pressed the doorbell."
+            "Someone answer my door.  Someone just pressed the doorbell.",
+            "Knock, Knock.  Housekeeping? Just kiddin', someone just rang the doorbell."
             ] | random + [
             " #Security",
-            " (http://amzn.to/2dcexIB)",
+            " (https://github.com/CCOSTAN/Home-AssistantConfig#cameras)",
             " (http://www.vmwareinfo.com/2017/07/my-smart-home-look-at-parts-that-make.html)",
             " #HomeAutomation"
+            ] | random }}
+          image: >-
+            {{ [
+            "/config/www/custom_ui/floorplan/images/branding/sleeping.png",
+            "/config/www/custom_ui/floorplan/images/branding/door.png",
+            "/config/www/custom_ui/floorplan/images/branding/door2.png",
+            "/config/www/custom_ui/floorplan/images/branding/light4.png",
+            "/config/www/custom_ui/floorplan/images/branding/landscape_light.png",
+            "/config/www/custom_ui/floorplan/images/branding/camera.png",
             ] | random }}
 
 # Motion Sensing

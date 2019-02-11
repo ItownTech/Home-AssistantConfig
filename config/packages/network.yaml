@@ -21,7 +21,6 @@ sensor:
                   'Entry Alarm Panel',
                   'Dash Button',
                   'Master Bedroom Roku',
-                  'Juicebox',
                   'Brother Printer',
                   'Stacey',
                   'Wii',
@@ -48,7 +47,6 @@ sensor:
                 [
                   'Carlo_Bolt_EV',
                   'Chromecast Audio 2',
-                  'JuiceBox',
                   'Carlo',
                   'Entry Alarm Panel',
                   'Dash Button',
@@ -73,17 +71,19 @@ group:
   network:
     entities:
       - sensor.ha_installed_version
+      - sensor.github_stats
+      - sensor.ccostanhomeassistantconfig_state
       - sensor.ha_uptime
-      - sensor.since_last_boot_templated
+      - sensor.last_boot_templated
       - sensor.disk_use_percent_
-      - sensor.database_sensor
+      - sensor.homeassistant_v2db
       - sensor.speedtest_download
       - sensor.speedtest_upload
       - binary_sensor.carlowink
       - sensor.network
       - sensor.network_detail
 
-# # Create full group with Loop!:
+# Create full group with Loop!:
 # {% for state in states.device_tracker-%}
 # - {{ state.entity_id | lower }}
 # {{ ' '}}
@@ -100,7 +100,6 @@ group:
       - device_tracker.camera1
       - device_tracker.camera2
       - device_tracker.camera3
-      - device_tracker.camera4
       - device_tracker.carlo
       - device_tracker.carlo_bolt
       - device_tracker.carlo_laptop
@@ -143,6 +142,7 @@ group:
       - device_tracker.stacey
       - device_tracker.study_ap
       - device_tracker.tablotv
+      - device_tracker.tesla_powerwall
       - device_tracker.unifi_ap_office
       - device_tracker.wii
       - device_tracker.withings_scale

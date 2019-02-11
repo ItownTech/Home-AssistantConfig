@@ -12,9 +12,9 @@
       from: 'above_horizon'
 
   action:
-    - service: script.tweet_engine
+    - service: script.tweet_engine_image
       data_template:
-        tweet: >
+        tweet: >-
           {{ [
           "Right before sunset, I turn on the outdoor lights.",
           "Since it gets dark around sunset, I will turn on the landscaping lights.",
@@ -26,7 +26,18 @@
           " #Sunset",
           " #HomeAutomation",
           " #AccentLighting",
-          " (http://www.vmwareinfo.com/2017/08/diy-outdoor-smart-home-led-strips.html)"
+          " (http://www.vmwareinfo.com/2017/08/diy-outdoor-smart-home-led-strips.html)",
+          " (https://youtu.be/FcBVu_yk2iY)",
+          " (https://www.vcloudinfo.com/2018/09/unboxing-philips-hue-calla-landscape.html)"
+          ] | random }}
+        image: >-
+          {{ [
+          "/config/www/custom_ui/floorplan/images/branding/light.png",
+          "/config/www/custom_ui/floorplan/images/branding/light2.png",
+          "/config/www/custom_ui/floorplan/images/branding/light3.png",
+          "/config/www/custom_ui/floorplan/images/branding/light4.png",
+          "/config/www/custom_ui/floorplan/images/branding/landscape_light.png",
+          "/config/www/custom_ui/floorplan/images/branding/sunset.png"
           ] | random }}
     - delay: '00:{{ (range(1, 20)|random|int) }}:00'
     - service: script.speech_engine
@@ -36,11 +47,18 @@
     - service: homeassistant.turn_on
       entity_id:
         - switch.front_landscaping
+        - light.bedroom
     - service: script.monthly_color_scene
     - service: light.turn_on
-      entity_id: light.outdoor_bathroom
-      data:
-        brightness: 20
+      entity_id:
+        - light.outdoor_bathroom
+      data_template:
+        brightness: >
+          {% if states.group.family.state == 'home' -%}
+          10
+          {% else %}
+          200
+          {% endif %}
     - wait_template: >-
        {{ states.group.family.state == 'home' }}
     - service: switch.turn_on
@@ -54,7 +72,6 @@
     - service: light.turn_on
       entity_id:
        - group.living_room_accents
-       - light.bedroom
     - wait_template: >-
        {{ is_state('group.garage_doors', 'closed') }}
     - wait_template: >-

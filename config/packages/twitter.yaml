@@ -19,9 +19,26 @@ notify:
     consumer_secret: !secret twitter_consumer_secret
     access_token: !secret twitter_access_token
     access_token_secret: !secret twitter_access_token_secret
+  - name: ccostan
+    platform: twitter
+    consumer_key: !secret twitter_consumer_key2
+    consumer_secret: !secret twitter_consumer_secret2
+    access_token: !secret twitter_access_token2
+    access_token_secret: !secret twitter_access_token_secret2
 
 ### Building out some Historical stats for tweeting. #####################
 sensor:
+  - platform: command_line
+    command: 'curl https://api.github.com/repos/ccostan/home-assistantconfig'
+    name: GitHub Stats
+    scan_interval: 20000
+    value_template: '{{ value_json.name }}'
+    json_attributes:
+      - open_issues
+#      - subscribers_count
+#      - forks
+      - stargazers_count
+
 
   - platform: history_stats
     name: Doorbell Presses
@@ -68,12 +85,99 @@ sensor:
     duration:
       days: 7
 
-  # - platform: rest
-  #   name: July 4th Countdown
-  #   resource: http://api.wolframalpha.com/v1/result?appid=JIUY8U-4V8KY45VT1&i=How%20many%20days%20until%204th%20July%202018
-  #   value_template: "{{ (value|replace(' days', '')) | int }}"
-  #   unit_of_measurement: Days
-  #   scan_interval: 43200```
+### Building some interesting stats for tweeting. ###
+  - platform: template
+    sensors:
+      sensor_count:
+        friendly_name: 'Number of Sensors'
+        value_template: >
+          {%- set domains = ['sensor'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      automation_count:
+        friendly_name: 'Number of Automations'
+        value_template: >
+          {%- set domains = ['automation'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      script_count:
+        friendly_name: 'Number of Scripts'
+        value_template: >
+          {%- set domains = ['script'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      binary_sensor_count:
+        friendly_name: 'Number of Binary Sensors'
+        value_template: >
+          {%- set domains = ['binary_sensor'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      tracker_count:
+        friendly_name: 'Number of Devices'
+        value_template: >
+          {%- set domains = ['device_tracker'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      lights_count:
+        friendly_name: 'Number of Lights'
+        value_template: >
+          {%- set domains = ['light'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+      protect_count:
+        friendly_name: 'Number of Smoke Detectors'
+        value_template: >
+          {% if states('group.protects') == 'on' %}
+          {% for e in states.group.protects.attributes.entity_id if states(e) == 'on'  %}
+          {% if loop.last %}
+          {{ loop.index }}
+          {% endif %}
+          {%- endfor -%}
+          {% else %}
+          0
+          {% endif %}
+      camera_count:
+        friendly_name: 'Number of online Cameras'
+        value_template: >
+          {%- set domains = ['camera'] -%}
+          {%- for domain in domains -%}
+            {%- for item in states[domain] -%}
+              {% if loop.first %}
+                {{loop.length}}
+              {% endif %}
+            {%- endfor -%}
+          {%- endfor -%}
+
 
 group:
   tweet_stats:
@@ -84,6 +188,14 @@ group:
       - sensor.speech_time
       - sensor.tv_time
       - sensor.bolt_charging_time
+      - sensor.sensor_count
+      - sensor.script_count
+      - sensor.binary_sensor_count
+      - sensor.automation_count
+      - sensor.lights_count
+      - sensor.tracker_count
+      - sensor.protect_count
+      - sensor.camera_count
 
 #############################################################
 
@@ -107,31 +219,6 @@ automation:
           media_content_id: "https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/twitter-chirp.mp3"
           media_content_type: audio/mp4
 
-      # - service: script.tweet_engine
-      #   data_template:
-      #     tweet: >-
-      #       {% set handle = trigger.event.data.value1 %}
-      #       {% set location = trigger.event.data.location %}
-      #       {% set phrases = [
-      #         "Thanks for the Follow " ~ handle ~ "! Chirp the Bird from " ~ location ~ "!!",
-      #         "Hey " ~ handle ~ "! Thanks for the Follow from " ~ location ~ " !",
-      #         "Sending a #Chirp to " ~ handle ~ " in " ~ location ~ "!",
-      #         "New follower " ~ handle ~ " from " ~ location ~ ", I just sounded a chirp in the house.",
-      #         "Boom! The " ~ location ~ " follow from " ~ handle ~ " makes me sound a chirp in the house.",
-      #         "Wanna know who is super cool? "~ handle ~" IS!!! Thanks for making me CHIRP!",
-      #         "If the AMP (http://amzn.to/2j18dlT) is on & I get a new follower like " ~ handle ~ ", I sound a chirp!"
-      #       ] %}
-      #       {% set hashtags = [
-      #         "#ThanksForTheFollow",
-      #         "#FollowBack",
-      #         "#ChirpTheHouse",
-      #         "#FollowMe",
-      #         "#MakingitChirp",
-      #         "(http://www.vmwareinfo.com/2017/12/giving-house-twitter-account.html)",
-      #         "(http://www.vmwareinfo.com/2017/11/building-digital-cuckoo-clock-with-home.html)"
-      #       ] %}
-      #       {{ phrases|random ~ " " ~ hashtags|random }}
-
   - alias: 'Closed Github Issue'
     hide_entity: True
     trigger:
@@ -139,29 +226,76 @@ automation:
         event_type: closed_github
 
     action:
-      - service: script.tweet_engine
+      - service: script.tweet_engine_image
         data_template:
           tweet: >-
             {% set repo = trigger.event.data.repo %}
             {% set issue = trigger.event.data.issue %}
             {% set issueurl = trigger.event.data.issueurl %}
             {% set phrases = [
-              "New Code Alert: " ~ issue ~ "(" ~ issueurl ~ "). Repo: (https://github.com/CCOSTAN/Home-AssistantConfig/commits/master) "
+              "New Code: " ~ issue ~ " " ~ issueurl
             ] %}
             {% set hashtags = [
               "#Github",
-              "#HomeAutomation",
               "#SmartHomeCode"
             ] %}
             {{ phrases|random ~ " " ~ hashtags|random }}
+          image: >-
+            {% set pictures = [
+              "/config/www/custom_ui/floorplan/images/branding/repo_ad.png",
+              "/config/www/custom_ui/floorplan/images/branding/repo_ad2.png",
+              "/config/www/custom_ui/floorplan/images/branding/repo_ad3.png",
+              "/config/www/custom_ui/floorplan/images/branding/bearstoneflow.png",
+              "/config/www/custom_ui/floorplan/images/branding/repo_ad4.png"
+            ] %}
+            {{ pictures|random }}
 
+  - alias: 'ThrowBack message'
+    trigger:
+      - platform: time
+        hours: '/28'
+        minutes: 13
+        seconds: 00
+
+    action:
+      - service: notify.ccostan
+        data_template:
+          message: >-
+            {% set phrases = [
+              "One of the most popular #SmartHome Projects I have done: (https://www.vcloudinfo.com/2017/07/visualizing-smart-home-using-home.html)",
+              "This project was one of the most popular: (https://www.vcloudinfo.com/2017/11/building-digital-cuckoo-clock-with-home.html)",
+              "Some of the Best Home Assistant resources around! (https://www.vcloudinfo.com/2018/04/some-of-my-favorite-home-assistant.html)",
+              "My Journey to Docker #ThrowBack - (https://www.vcloudinfo.com/2018/02/journey-to-docker.html)",
+              "My Popular DIY Motion Sensor #ThrowBack - (https://www.vcloudinfo.com/2017/11/yet-another-inexpensive-motion-sensor.html)",
+              "Build your own DIY Outdoor Smart Home LED strips - (https://www.vcloudinfo.com/2017/08/diy-outdoor-smart-home-led-strips.html)",
+              "Breakdown of the entire smart home - (https://www.vcloudinfo.com/2017/07/my-smart-home-look-at-parts-that-make.html)",
+              "Build your own Home Alarm System - (https://www.vcloudinfo.com/2017/06/building-my-home-alarm-system-hardware.html)",
+              "Adding a Mixer and AMP to this Text to Speech solution changed the Smart Home COMPLETELY! (https://www.vcloudinfo.com/2017/07/giving-voice-to-smart-home.html)",
+              "Some of my favorite #Docker Containers that I am using - (https://www.vcloudinfo.com/2018/06/rolling-out-some-new-docker-containers.html)",
+              "Be Sure to follow all of my Twitter Accounts! @CCostan and my HOUSE bot @BearStoneHA!",
+              "If you are not subscribed to my Smart Home YouTube channel, come join us now! (https://YouTube.com/ccostan)",
+              "My Full Smart Home diagram and #IOT icon set that you can download to build your own! - (https://www.vcloudinfo.com/2018/07/the-bear-stone-home-assistant-icon.html),"
+              "Be sure to like me on Facebook and join our HA group! (https://www.facebook.com/groups/HomeAssistant/) (https://www.facebook.com/VMwareInfo/) (https://www.facebook.com/BearStoneHA/)",
+              "You can see how ALL of this is done by browsing my GitHub Repository (https://github.com/CCOSTAN/Home-AssistantConfig#logo)",
+              "10 year safety check.  If you haven't done it yet, you need to! (https://www.vcloudinfo.com/2017/06/psa-check-out-your-smoke-detectors-once.html)"
+            ] %}
+            {% set hashtags = [
+              "#Throwback"
+            ] %}
+            {{ phrases|random ~ " " ~ hashtags|random ~ " #IOT #SmartHome" }}
+          data:
+            media: >-
+              {% set pictures = [
+                "/config/www/custom_ui/floorplan/images/branding/throwback.png"
+              ] %}
+              {{ pictures|random }}
 
   - alias: 'Random House stats'
     hide_entity: True
     trigger:
       - platform: time
-        hours: '/3'
-        minutes: 01
+        hours: '/2'
+        minutes: 45
         seconds: 00
     condition:
       - condition: template
@@ -172,39 +306,21 @@ automation:
             true
           {%- endif -%}
     action:
-      - delay: '0{{ range(0,2) | random | int }}:{{ range(10,59) | random | int }}:00'
-      - service: script.tweet_engine
+      - delay: '0{{ range(0,2) | random | int }}:{{ range(0,5) | random | int }}{{ range(0,9) | random | int }}:{{ range(0,5) | random | int }}{{ range(0,9) | random | int }}'
+      - service: script.tweet_engine_setup
         data_template:
-          tweet: >
-            {{ [
-            "Beep. Bop. Beep. Boop.  I am a #Bot run by @CCostan",
-            "The number of Doorbell presses yesterday was {{states.sensor.doorbell_presses.state}}",
-            "The #Landscaping lights where on for about {{states.sensor.landscaping_light_time.attributes.value}} yesterday.",
-            "The #ChevyBolt has been charging for about {{states.sensor.bolt_charging_time.attributes.value}}inutes in the last 7 days.",
-            "I have spoken for about {{states.sensor.speech_time.attributes.value}}inutes in the last 24 hours.",
-            "When you add it all up, I have spoken for about {{states.sensor.speech_time.attributes.value}}inutes in the last 24 hours!",
-            "So far, I have prevented {{states.sensor.pihole_ads_blocked_today.state}} ads from hitting the network via Pi-hole! http://www.pi-hole.net",
-            "Pi-hole (http://www.pi-hole.net) has serviced {{states.sensor.pihole_dns_queries_today.state}} DNS requests today! #PiZero",
-            "{{states.sensor.doorbell_presses.state}} people came to the door today and pressed the bell.",
-            "The #Docker Host has been running for {{states.sensor.since_last_boot_templated.state}} (http://www.vmwareinfo.com/2018/02/journey-to-docker.html)",
-            "The #Docker Host for Home Assistant is using {{states.sensor.disk_use_percent_.state}}% of the hard drive currently. (http://www.vmwareinfo.com/2018/02/journey-to-docker.html)",
-            "My Home Assistant Database is currently using {{states.sensor.database_sensor.state}} MBs. To get this #Stat for your HA, visit (https://github.com/robmarkcole/HASS-filesize-sensor)",
-            "The {{states.media_player.living_room_ultra.attributes.friendly_name}} #Roku is playing #{{states.media_player.living_room_ultra.attributes.app_name}}.",
-            "The {{states.media_player.upstairs_living_room.attributes.friendly_name}} #Roku is playing #{{states.media_player.upstairs_living_room.attributes.app_name}}. (http://amzn.to/2lYZEup)",
-            "I am running Home Assistant version {{states.sensor.ha_installed_version.state}} (https://github.com/CCOSTAN/Home-AssistantConfig)",
-            "{{states.sensor.doorbell_presses.state}} doorbell presses occurred in the last 24 hours.",
-            "I keep the average humidity of the house at {{states.sensor.downstairs_thermostat_humidity.state}} percent. Outside is {{states.sensor.dark_sky_humidity.state}} #Nest (http://amzn.to/2BWNk5N)",
-            "Outside is {{states.sensor.dark_sky_temperature.state}}. I keep the average temperature at {{states.sensor.downstairs_thermostat_temperature.state}}. #Weather (http://amzn.to/2BWNk5N)",
-            "I know that it will be {{states.sensor.dark_sky_minutely_summary.state}} So I will adjust the Heating/Cooling, irrigation and lighting accordingly. #Nest #Rachio #Hue",
-            "Average internet stats are Download: {{states.sensor.speedtest_download.state}} Mbit/s & Upload {{states.sensor.speedtest_upload.state}} Mbit/s.",
-            "Todays Sleep Number is {{states.sensor.sleepnumber_carlo_stacey_sleepnumber.state}}. Wifi connected Bed FTW! #SleepStat (http://amzn.to/2D10BcQ)",
-            "Our Sleep Number is {{states.sensor.sleepnumber_carlo_carlo_sleepnumber.state}}. Wifi connected Bed! #SleepStat (http://amzn.to/2D10BcQ)",
-            "The current UV index is {{states.sensor.dark_sky_uv_index.state}} and the Moon is {{states.sensor.moon.state}}.  #Space",
-            "Home Assistant has been running for {{states.sensor.ha_uptime.state}}. (https://github.com/CCOSTAN/Home-AssistantConfig)",
-            "My @getspectrum internet download speed is about {{states.sensor.speedtest_download.state}} Mbit/s and I am a #cordcutter. @TabloTV",
-            "Yesterday we watched about {{states.sensor.tv_time.attributes.value}}inutes of television. @YouTube & @TabloTV on the @Roku",
-            "I am keeping track of the current #Tesla stock price. It is {{ states.sensor.tesla.state  | round }} dollars. #Solar",
-            "I am keeping track of the current #Bitcoin prices. It is {{ states.sensor.bitcoin.state  | round }} dollars. #BTC",
-            "There are {{states.sensor.bear_stone.state}} #Minecraft users online at the momemt. #KidStat",
-            "Average Cloud Coverage: {{states.sensor.dark_sky_cloud_coverage.state}}%, Average Temp: {{states.sensor.dark_sky_temperature.state}}°F #Solar (http://www.vmwareinfo.com/2018/01/going-green-to-save-some-green-in-2018.html)"
-            ] | random + " #RandomStat"}}
+          pick: >-
+            {% set pick = [
+              "solar", "solar", "solar",
+              "robot", "robot", "robot", "robot", "robot", "robot", "robot", "robot", "robot","robot","robot","robot","robot","robot",
+              "door", "door", "door",
+              "weather", "weather", "weather", "weather", "weather",
+              "cloud",
+              "internet", "internet", "internet", "internet", "internet", "internet", "internet",
+              "stocks", "stocks", "stocks", "stocks",
+              "night", "night",
+              "tv", "tv", "tv",
+              "throwback",
+              "promo", "promo"
+            ] %}
+            {{ pick|random }}
