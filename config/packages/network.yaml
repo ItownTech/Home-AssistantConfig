@@ -10,6 +10,7 @@ sensor:
     sensors:
       network:
         friendly_name: 'Network Monitor'
+        entity_id: []
         value_template: >
           {%- set domains = ['device_tracker'] -%}
           {%- for domain in domains -%}
@@ -39,6 +40,7 @@ sensor:
     sensors:
       network_detail:
         friendly_name: 'Network Monitor Detail'
+        entity_id: []
         value_template: >
           {%- set domains = ['device_tracker'] -%}
           {%- for domain in domains -%}
@@ -75,7 +77,7 @@ group:
       - sensor.ccostanhomeassistantconfig_state
       - sensor.ha_uptime
       - sensor.last_boot_templated
-      - sensor.disk_use_percent_
+      - sensor.disk_use_percent
       - sensor.homeassistant_v2db
       - sensor.speedtest_download
       - sensor.speedtest_upload

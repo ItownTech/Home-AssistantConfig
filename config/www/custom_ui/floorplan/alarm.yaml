@@ -83,13 +83,9 @@ rules:
     entities:
       - switch.front_landscaping
       - switch.back_landscaping
-      - switch.printer_outlet
-      - switch.kitchen_accents
-      - switch.master_bathroom_accents
-      - switch.front_door_outlet
-      - switch.foyer_outlet
-      - switch.living_room_amp
-      - switch.garage_outlet
+      - group.kitchen_accents
+      - group.master_bathroom_accents
+      - switch.lr_amp
     states:
       - state: 'on'
         class: 'switch-on'
@@ -160,7 +156,7 @@ rules:
       - light.led_garage_large
       - light.led_garage_small
       - light.led_outdoor_den
-      - light.stone_door
+      - light.front_door
     states:
       - state: 'on'
         class: 'light-on'
@@ -283,7 +279,7 @@ rules:
 
   - name: Camera Images
     entities:
-      - camera.stone_door
+      - camera.front_door
       - camera.camera1
       - camera.camera2
       - camera.camera3

@@ -1,9 +1,9 @@
 <h1 align="center">
   <a name="logo" href="http://www.vCloudInfo.com/tag/iot"><img src="https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/www/custom_ui/floorplan/images/branding/twitter_profile.png" alt="Bear Stone Smart Home" width="200"></a>
   <br>
-  Bear Stone Smart Home Configuration
+  Bear Stone Smart Home Documentation
 </h1>
-<h4 align="center">Be sure to :star: my repo so you can keep up to date on the daily progress!.</h4>
+<h4 align="center">Be sure to :star: my configuration repo so you can keep up to date on any daily progress!</h4>
 <div align="center">
   <h4>
     <a href="https://travis-ci.org/CCOSTAN/Home-AssistantConfig"><img src="https://travis-ci.org/CCOSTAN/Home-AssistantConfig.svg?branch=master"/></a>
@@ -22,7 +22,7 @@
       Devices
     </a>
     <span> | </span>
-    <a href="https://github.com/CCOSTAN/Home-AssistantConfig/issues">
+    <a href="https://github.com/CCOSTAN/Home-AssistantConfig/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc">
       Todo List
     </a>
     <span> | </span>
@@ -30,8 +30,8 @@
       Smart Home Stats
     </a>
     <span> | </span>
-    <a href="https://www.facebook.com/BearStoneHA">
-      Facebook
+    <a href="https://www.vcloudinfo.com/click-here">
+      Follow Me
     </a>
     <span> | </span>
     <a href="https://github.com/CCOSTAN/Home-AssistantConfig/tree/master/config">
@@ -40,21 +40,21 @@
     <span> | </span>
     <a href="https://github.com/CCOSTAN/Home-AssistantConfig#diagram">
       Diagram
-    </a>    
+    </a>
     <span> | </span>
-    <a href="https://youtube.com/CCOSTAN">
+    <a href="https://youtube.com/vCloudInfo">
       Youtube
     </a>
     <span> | </span>
-    <a href="https://www.vcloudinfo.com/p/shop-our-merch.html">
-      Tee Shop
+    <a href="https://amzn.to/2HXSx2M">
+      Merch
     </a>
   </h4>
 
 <a name="bottom" href="https://github.com/CCOSTAN/Home-AssistantConfig#logo"><img align="right" border="0" src="https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/www/custom_ui/floorplan/images/branding/up_arrow.png" width="25" ></a>
 
-**Still have questions on my Config?**
-**Message me on twitter :** [@CCostan](https://twitter.com/ccostan) or [@BearStoneHA](https://twitter.com/BearStoneHA)
+**Still have questions on my Config?** <br>
+**Message me on twitter :** [![Follow CCostan](https://img.shields.io/twitter/follow/CCostan)](https://www.twitter.com/ccostan) or [![Follow Bear Stone Home](https://img.shields.io/twitter/follow/BearStoneHA)](https://www.twitter.com/BearStoneHA)
 <!-- Subscribe Section -->
 <a href="http://eepurl.com/dmXFYz"><img align="center" border="0" src="https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/www/custom_ui/floorplan/images/branding/email_link.png" height="50" ></a>.
 <!-- Subscribe Section END-->

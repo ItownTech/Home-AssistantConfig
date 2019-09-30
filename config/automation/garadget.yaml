@@ -24,19 +24,20 @@
   action:
     - service: script.notify_engine
       data_template:
-        value1: 'Check Garage Doors Reflection:'
-        value2: "Small: {{ states('sensor.small_garage_reflection_rate')}}"
-        value3: "Large: {{ states('sensor.large_garage_reflection_rate')}}"
-        who: "carlo"
+        title: 'Garage door Status Change:'
+        value1: "Small: {{ states('sensor.small_garage_reflection_rate')}}"
+        value2: "Large: {{ states('sensor.large_garage_reflection_rate')}}"
+        who: "parents"
+        content_type: 'jpeg'
+        url: !secret camera2_snapshot
 
 ##############################################################################
 
 - alias: Is the Garage door Open at night - Checks every 30 minutes or 5 minutes after we drive away.
   hide_entity: True
   trigger:
-    - platform: time
+    - platform: time_pattern
       minutes: '/45'
-      seconds: 00
     - platform: state
       entity_id: group.family
       to: not_home
@@ -76,10 +77,11 @@
   action:
     - service: script.notify_engine
       data_template:
-        value1: 'Check Garage Doors:'
-        value2: "Small: {{ states('cover.small_garage')}}"
-        value3: "Large: {{ states('cover.large_garage')}}"
+        title: 'Check Garage Doors:'
+        value1: "Small: {{ states('cover.small_garage')}}"
+        value2: "Large: {{ states('cover.large_garage')}}"
         who: "family"
+        camera_entity: "camera.camera2"
 
     - service: script.speech_engine
       data_template:

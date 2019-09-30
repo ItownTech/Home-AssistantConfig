@@ -2,7 +2,7 @@
 ##  Stuff that needs to happen at 08:30am.
 ######################################################################
 
-- alias: 'Kids left for the day.'
+- alias: 'Kids left for the day'
   trigger:
     - platform: time
       at: '08:30:00'
@@ -29,6 +29,4 @@
        {{ is_state('group.garage_doors', 'open') }}
     - delay: 00:03:00
     - service: light.turn_off
-      entity_id:
-        - group.all_lights
-        
+      entity_id: all
